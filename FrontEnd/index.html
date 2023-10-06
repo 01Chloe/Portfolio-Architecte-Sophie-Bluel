@@ -9,18 +9,23 @@
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Work+Sans&display=swap"
 		rel="stylesheet">
-	<meta name="description" content="">
+	<meta name="description" content="Sophie Bluel, Architecte d'intérieur. Je raconte votre histoire, je valorise vos idées. Je vous accompagne de la conception à la
+	livraison finale du chantier.">
 	<link rel="stylesheet" href="./assets/style.css">
 </head>
 
 <body>
+	<div class="edition-bar">
+		<img src="./assets/icons/editWhite.svg" alt="modifier">
+		<p>Mode édition</p>
+	</div>
 	<header>
-		<h1>Sophie Bluel <span>Architecte d'inteérieur</span></h1>
+		<h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
 		<nav>
 			<ul>
-				<li>projets</li>
-				<li>contact</li>
-				<li>login</li>
+				<li><a href="#portfolio">projets</a></li>
+				<li><a href="#contact">contact</a></li>
+				<li><a href="./login/login.html" class="login-link">login</a></li>
 				<li><img src="./assets/icons/instagram.png" alt="Instagram"></li>
 			</ul>
 		</nav>
@@ -42,7 +47,13 @@
 			</article>
 		</section>
 		<section id="portfolio">
-			<h2>Mes Projets</h2>
+			<div class="protfolio-title-container">
+				<h2>Mes Projets</h2>
+				<div class="portfolio-edtion-mode">
+					<img src="./assets/icons/editBlack.svg" alt="modifier">
+					<p>modifier</p>
+				</div>
+			</div>
 			<div class="filters-btn-container">
 				<!-- filters buttons are added here in JS -->
 			</div>

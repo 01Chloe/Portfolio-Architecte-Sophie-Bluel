@@ -96,3 +96,27 @@ function createButton(type, id) {
     addItemsInGallery(categoryId)
   })
 }
+
+// Show edtion mode if token true
+const tokenUser = sessionStorage.getItem("token")
+const editionBar = document.querySelector(".edition-bar")
+const loginLink = document.querySelector(".login-link")
+const portfolioEdtionMode = document.querySelector(".portfolio-edtion-mode")
+
+if (tokenUser) {
+  addEditionMode()
+} else {
+  editionBar.classList.remove("authorized")
+  loginLink.textContent = "login"
+  filterBtnContainer.style.display = "block"
+  portfolioEdtionMode.classList.remove("authorized")
+  document.body.classList.remove("login")
+}
+
+function addEditionMode() {
+  editionBar.classList.add("authorized")
+  loginLink.textContent = "logout"
+  filterBtnContainer.style.display = "none"
+  portfolioEdtionMode.classList.add("authorized")
+  document.body.classList.add("login")
+}

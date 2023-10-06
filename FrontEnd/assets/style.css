@@ -128,11 +128,17 @@ table {
   border-spacing: 0;
 }
 /** end reset css**/
+html {
+  scroll-behavior: smooth;
+}
 body {
   max-width: 1140px;
   margin: auto;
   font-family: "Work Sans";
   font-size: 14px;
+}
+body.login {
+  margin-top: 95px;
 }
 header {
   display: flex;
@@ -173,8 +179,12 @@ nav li {
   padding: 0 10px;
   font-size: 1.2em;
 }
-
-li:hover {
+nav li a {
+  text-decoration: none;
+  color: #000;
+  transition: color 0.3s ease-out;
+}
+a:hover {
   color: #b1663c;
 }
 #introduction {
@@ -203,6 +213,23 @@ li:hover {
 #portfolio h2 {
   text-align: center;
   margin-bottom: 1em;
+}
+.protfolio-title-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: baseline;
+}
+.protfolio-title-container .portfolio-edtion-mode {
+  margin-left: 30px;
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: center;
+  cursor: pointer;
+  display: none;
+}
+.protfolio-title-container .portfolio-edtion-mode img {
+  margin-right: 10px;
 }
 #portfolio .filters-btn-container {
   text-align: center;
@@ -234,7 +261,8 @@ li:hover {
 .gallery img {
   width: 100%;
 }
-#contact {
+#contact,
+.login-main {
   width: 50%;
   margin: auto;
 }
@@ -244,20 +272,23 @@ li:hover {
 #contact h2 {
   margin-bottom: 20px;
 }
-#contact form {
+#contact form,
+.login-form {
   text-align: left;
   margin-top: 30px;
   display: flex;
   flex-direction: column;
 }
 
-#contact input {
+#contact input,
+.login-form input {
   height: 50px;
   font-size: 1.2em;
   border: none;
   box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
 }
-#contact label {
+#contact label,
+.login-form label {
   margin: 2em 0 1em 0;
 }
 #contact textarea {
@@ -274,10 +305,63 @@ input[type="submit"] {
   width: 180px;
   text-align: center;
   border-radius: 60px;
+  cursor: pointer;
 }
 
 footer nav ul {
   display: flex;
   justify-content: flex-end;
   margin: 2em;
+}
+
+/* Login page style */
+.login-title {
+  color: #1d6154;
+  text-align: center;
+  font-family: Syne;
+  font-size: 30px;
+  font-weight: 700;
+  margin: 150px 0 37px;
+}
+.login-form label {
+  color: #3d3d3d;
+  font-family: "Work Sans";
+  font-weight: 500;
+}
+.login-error-msg {
+  text-align: center;
+  margin-top: 10px;
+  color: #b1663c;
+}
+.login-forget-pwd {
+  text-decoration: underline;
+  text-align: center;
+  color: #3d3d3d;
+  font-family: Work Sans;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* Edition mode style */
+.edition-bar {
+  position: absolute;
+  top: 0%;
+  left: 0;
+  width: 100%;
+  background: #000;
+  color: #fff;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 0;
+  cursor: pointer;
+  display: none;
+}
+.edition-bar p {
+  margin-left: 12px;
+}
+
+.edition-bar.authorized,
+.portfolio-edtion-mode.authorized {
+  display: flex;
 }
