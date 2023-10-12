@@ -24,34 +24,32 @@ async function handleSubmit(e) {
 
     if (response.ok) {
       const data = await response.json()
-      let token = data.token
 
       // Store token in sessionStorage
-      sessionStorage.setItem("token", token)
+      sessionStorage.setItem("token", data.token)
 
       // Redirect user to home page
-      window.location.href = "../index.html"
+      location.replace("../index.html")
     } else {
-      // Show error message
       updateErrorMessage("Erreur dans l'identifiant ou le mot de passe")
       sessionStorage.clear()
     }
   } catch (error) {
     console.error(error)
-    updateErrorMessage("Erreur dans l'identifiant ou le mot de passe")
+    updateErrorMessage("Problème de connexion")
     sessionStorage.clear()
   }
 }
 
-// listen submission
+// Listen submission
 loginForm.addEventListener("submit", handleSubmit)
 
-// clear error message
+// Clear error message
 loginEmail.addEventListener("input", () => {
   updateErrorMessage("")
 })
 
-// clear error message
+// Clear error message
 loginPwd.addEventListener("input", () => {
   updateErrorMessage("")
 })

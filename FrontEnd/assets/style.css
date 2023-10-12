@@ -231,6 +231,10 @@ a:hover {
 .protfolio-title-container .portfolio-edtion-mode img {
   margin-right: 10px;
 }
+.protfolio-title-container .portfolio-edtion-mode .open-modal-btn {
+  text-decoration: none;
+  color: #000;
+}
 #portfolio .filters-btn-container {
   text-align: center;
   margin: 50px 0 40px;
@@ -260,6 +264,7 @@ a:hover {
 
 .gallery img {
   width: 100%;
+  height: 100%;
 }
 #contact,
 .login-main {
@@ -281,14 +286,17 @@ a:hover {
 }
 
 #contact input,
-.login-form input {
+.login-form input,
+.input-group input,
+select {
   height: 50px;
   font-size: 1.2em;
   border: none;
   box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
 }
 #contact label,
-.login-form label {
+.login-form label,
+.input-group label {
   margin: 2em 0 1em 0;
 }
 #contact textarea {
@@ -341,6 +349,19 @@ footer nav ul {
   font-weight: 500;
   cursor: pointer;
 }
+.logout-btn {
+  border: none;
+  background: transparent;
+  font-family: "Work Sans";
+  color: #000;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.3s ease-out;
+}
+.logout-btn:hover {
+  color: #b1663c;
+}
 
 /* Edition mode style */
 .edition-bar {
@@ -364,4 +385,156 @@ footer nav ul {
 .edition-bar.authorized,
 .portfolio-edtion-mode.authorized {
   display: flex;
+}
+
+/* Modal style */
+#modal-container {
+  position: fixed;
+  top: 0%;
+  left: 0%;
+  width: 100%;
+  height: 100%;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.5);
+}
+.modal,
+.add-project-form {
+  max-width: 630px;
+  max-height: 690px;
+  border-radius: 10px;
+  background: #fff;
+  padding: 60px 105px 45px;
+  position: relative;
+}
+.modal .close-modal-btn,
+.add-project-form .close-form-btn,
+.add-project-form .go-back-btn {
+  position: absolute;
+  top: 26px;
+  right: 30px;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  font-size: 24px;
+}
+.modal .modal-title,
+.add-project-form .form-title {
+  font-size: 26px;
+  text-align: center;
+  margin-bottom: 45px;
+}
+.modal hr,
+.add-project-form hr {
+  background: #b3b3b3;
+  margin: 60px 0 35px;
+}
+.modal .modal-add-project-btn,
+.add-project-form .form-add-project-btn {
+  border: none;
+  padding: 10px 49px;
+  display: block;
+  margin: 10px auto 0;
+  width: auto;
+}
+.add-project-form .form-add-project-btn:disabled {
+  background: #a7a7a7;
+  cursor: auto;
+}
+.modal .modal-gallery-container {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  grid-column-gap: 6px;
+  grid-row-gap: 25px;
+}
+.modal-project-container {
+  position: relative;
+}
+.modal-img {
+  width: 79px;
+  height: 104px;
+}
+.modal-trash-btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: #000;
+  border: none;
+  border-radius: 2px;
+  padding: 3px 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+/* Add image form style */
+.hidden {
+  display: none;
+}
+.go-back-btn {
+  left: 30px;
+}
+.add-project-form .form-title {
+  margin-bottom: 36px;
+}
+.input-group {
+  display: flex;
+  flex-direction: column;
+}
+.input-group .add-project-icon {
+  width: 76px;
+  height: 76px;
+  margin: 0 auto;
+}
+.input-group:nth-child(1) {
+  background: #e8f1f6;
+  border-radius: 3px;
+  padding: 22px 123px 19px;
+  text-align: center;
+}
+.input-group:nth-child(1) label {
+  margin: 6px 0 7px;
+  background: #cbd6dc;
+  border-radius: 50px;
+  color: #306685;
+  font-weight: 500;
+  padding: 10px 33px;
+  cursor: pointer;
+}
+#add-project-input {
+  display: none;
+}
+.add-project-parag {
+  font-size: 10px;
+  color: #444;
+}
+.form-error-msg {
+  color: #b1663c;
+  text-align: center;
+  margin: 10px 0;
+}
+.add-project-form hr {
+  margin: 40px 0 0;
+}
+
+/* Success PopUp */
+.success-popup {
+  text-align: center;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  border: 2px solid #1d6154;
+  padding: 10px 15px;
+  border-radius: 5px;
+  color: #1d6154;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+.success-popup.success {
+  opacity: 1;
+  transform: translateY(0);
 }

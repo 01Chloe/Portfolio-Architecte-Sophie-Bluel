@@ -22,11 +22,11 @@
 	<header>
 		<h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
 		<nav>
-			<ul>
+			<ul class="nav-list">
 				<li><a href="#portfolio">projets</a></li>
 				<li><a href="#contact">contact</a></li>
 				<li><a href="./login/login.html" class="login-link">login</a></li>
-				<li><img src="./assets/icons/instagram.png" alt="Instagram"></li>
+				<li><img src="./assets/icons/instagram.png" alt="Instagram" class="nav-icon"></li>
 			</ul>
 		</nav>
 	</header>
@@ -51,7 +51,7 @@
 				<h2>Mes Projets</h2>
 				<div class="portfolio-edtion-mode">
 					<img src="./assets/icons/editBlack.svg" alt="modifier">
-					<p>modifier</p>
+					<a href="#modal-container" class="open-modal-btn">modifier</a>
 				</div>
 			</div>
 			<div class="filters-btn-container">
@@ -75,6 +75,50 @@
 			</form>
 		</section>
 	</main>
+
+	<aside id="modal-container" aria-hidden="true" role="dialog">
+		<div class="modal">
+			<button class="close-modal-btn" aria-label="fermer la fenêtre modale">&times;</button>
+			<h3 class="modal-title">Galerie photo</h3>
+			<div class="modal-gallery-container">
+				<!-- Content of modal here -->
+			</div>
+			<hr>
+			<input type="submit" class="modal-add-project-btn" value="Ajouter une photo">
+		</div>
+		<div class="add-project-form hidden">
+			<div class="btn-container">
+				<img src="./assets/icons/arrowLeft.svg" alt="flèche de retour en arrière" class="go-back-btn">
+				<button class="close-form-btn" aria-label="fermer le formulaire">&times;</button>
+			</div>
+			<h3 class="form-title">Ajout photo</h3>
+			<form class="form-send-project">
+				<div class="input-group">
+					<img src="./assets/icons/addProject.svg" alt="ajouter un projet" class="add-project-icon">
+					<label for="add-project-input" class="add-project-label-btn">+ Ajouter photo</label>
+					<input type="file" id="add-project-input" name="add-project-input"
+						accept="image/png, image/jpg" />
+					<p class="add-project-parag">jpg, png, 4mo max</p>
+				</div>
+
+				<div class="input-group">
+					<label for="title">Titre</label>
+					<input type="text" id="title" name="title">
+				</div>
+
+				<div class="input-group">
+					<label for="category">Catégorie</label>
+				</div>
+
+				<hr>
+				<p class="form-error-msg hidden">Veuillez remplir tous les champs correctement</p>
+				<input type="submit" class="form-add-project-btn" value="Valider" disabled>
+			</form>
+			<div class="success-popup">
+				<p>Projet ajouté avec success !</p>
+			</div>
+		</div>
+	</aside>
 
 	<footer>
 		<nav>
