@@ -49,7 +49,7 @@
 		<section id="portfolio">
 			<div class="protfolio-title-container">
 				<h2>Mes Projets</h2>
-				<div class="portfolio-edtion-mode">
+				<div class="portfolio-edition-mode">
 					<img src="./assets/icons/editBlack.svg" alt="modifier">
 					<a href="#modal-container" class="open-modal-btn">modifier</a>
 				</div>
@@ -76,28 +76,28 @@
 		</section>
 	</main>
 
-	<aside id="modal-container" aria-hidden="true" role="dialog">
-		<div class="modal">
+	<aside id="modal-container" class="hidden" aria-hidden="true">
+		<div class="modal" role="dialog">
 			<button class="close-modal-btn" aria-label="fermer la fenêtre modale">&times;</button>
-			<h3 class="modal-title">Galerie photo</h3>
+			<h2 class="modal-title">Galerie photo</h2>
 			<div class="modal-gallery-container">
 				<!-- Content of modal here -->
 			</div>
 			<hr>
-			<input type="submit" class="modal-add-project-btn" value="Ajouter une photo">
+			<button class="modal-add-project-btn">Ajouter une photo</button>
 		</div>
 		<div class="add-project-form hidden">
 			<div class="btn-container">
 				<img src="./assets/icons/arrowLeft.svg" alt="flèche de retour en arrière" class="go-back-btn">
 				<button class="close-form-btn" aria-label="fermer le formulaire">&times;</button>
 			</div>
-			<h3 class="form-title">Ajout photo</h3>
+			<h2 class="form-title">Ajout photo</h2>
 			<form class="form-send-project">
 				<div class="input-group">
 					<img src="./assets/icons/addProject.svg" alt="ajouter un projet" class="add-project-icon">
 					<label for="add-project-input" class="add-project-label-btn">+ Ajouter photo</label>
 					<input type="file" id="add-project-input" name="add-project-input"
-						accept="image/png, image/jpg" />
+						accept="image/png, image/jpg">
 					<p class="add-project-parag">jpg, png, 4mo max</p>
 				</div>
 
@@ -108,6 +108,9 @@
 
 				<div class="input-group">
 					<label for="category">Catégorie</label>
+					<select id="category" name="category">
+						<!-- Add option in JS -->
+					</select>
 				</div>
 
 				<hr>

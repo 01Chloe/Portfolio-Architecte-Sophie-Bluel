@@ -3,34 +3,73 @@ let allData = []
 let currentCategoryId = "0" // Show all categories by default
 
 const WORKS_API_URL = "http://localhost:5678/api/works"
-const CATEGORIES_API_URL = "http://localhost:5678/api/categories"
 
-// Utils fonction for call API
-async function fetchData(url) {
+// Utils fonction send request to API
+async function fetchData(url, method = "GET", headers = {}, body = null) {
   try {
-    const response = await fetch(url)
-    if (!response.ok) {
-      throw new Error("Erreur")
+    const options = {
+      method: method,
+      headers: headers ? headers : {},
+      body: body ? body : null,
     }
-    return await response.json()
+
+    const response = await fetch(url, options)
+    if (!response.ok) {
+      throw new Error("Erreur lors de l'envoie de la requête")
+    }
+
+    const responseData = await response.text()
+    if (responseData) {
+      return JSON.parse(responseData)
+    } else {
+      return {} // Return an empty object if response is empty
+    }
   } catch (error) {
-    console.error(error)
+    console.error("Error:", error)
     return null
   }
 }
 
-// Get initial images
-async function callApi() {
+// Get initial projetcs
+let set = new Set()
+async function getProjects() {
   const data = await fetchData(WORKS_API_URL)
   if (data) {
     allData = data
-    addItemsInGallery("0") // Show all images by default
+    addProjectsInGallery("0")
   }
+  allData.forEach((project) => {
+    if (project.category.id && project.category.name) {
+      let categoryInfo = {
+        name: project.category.name,
+        id: project.category.id,
+      }
+      let isDuplicate = false
+      for (let item of set) {
+        if (item.name === categoryInfo.name && item.id === categoryInfo.id) {
+          isDuplicate = true
+          break
+        }
+      }
+      if (!isDuplicate) {
+        set.add(categoryInfo)
+      }
+    }
+  })
+  createButtons("Tous", "0")
+  if (set && set.size > 0) {
+    for (let item of set.values()) {
+      createButtons(item.name, item.id)
+    }
+  } else {
+    console.log("L'objet set est vide ou non défini")
+  }
+  createCategorySelection(set)
 }
-callApi()
+getProjects()
 
-// Add items dynamically based on category
-function addItemsInGallery(categoryId) {
+// Add projects dynamically based on category
+function addProjectsInGallery(categoryId) {
   currentCategoryId = categoryId // Update category
 
   if (allData.length === 0) {
@@ -56,24 +95,11 @@ function addItemsInGallery(categoryId) {
   galleryContainer.innerHTML = galleryHTML
 }
 
-// Add filters
-async function callCategories() {
-  const data = await fetchData(CATEGORIES_API_URL)
-  if (data) {
-    createButton("Tous", "0")
-    data.forEach((category) => {
-      createButton(category.name, category.id)
-    })
-    createCategorySelection(data)
-  }
-}
-callCategories()
-
 const filterBtnContainer = document.querySelector(".filters-btn-container")
 let allBtnFilter = []
 
 // Utils function for create filter button
-function createButton(type, id) {
+function createButtons(type, id) {
   let btn = document.createElement("button")
   btn.setAttribute("data-category", id)
   btn.classList.add("filter-btn")
@@ -87,21 +113,20 @@ function createButton(type, id) {
 
   btn.addEventListener("click", () => {
     // Show active button
-    allBtnFilter.forEach((button) => {
-      button.classList.remove("filter-active")
-    })
+    document.querySelector(".filter-active").classList.remove("filter-active")
+
     btn.classList.add("filter-active")
 
-    // Call the image filter function
+    // Call filtered projects
     const categoryId = btn.getAttribute("data-category")
-    addItemsInGallery(categoryId)
+    addProjectsInGallery(categoryId)
   })
 }
 
 // Toggle edtion mode and logout
 const editionBar = document.querySelector(".edition-bar")
 const loginLink = document.querySelector(".login-link")
-const portfolioEdtionMode = document.querySelector(".portfolio-edtion-mode")
+const portfolioEditionMode = document.querySelector(".portfolio-edition-mode")
 
 let logoutBtn
 logoutBtn = document.createElement("button")
@@ -114,12 +139,12 @@ if (sessionStorage.getItem("token")) {
 
 function addEditionMode() {
   editionBar.classList.add("authorized")
-  loginLink.style.display = "none"
+  loginLink.classList.add("hidden")
   logoutBtn.textContent = "logout"
   logoutBtn.classList.add("logout-btn")
   loginLink.parentNode.insertBefore(logoutBtn, loginLink)
-  filterBtnContainer.style.display = "none"
-  portfolioEdtionMode.classList.add("authorized")
+  filterBtnContainer.classList.add("hidden")
+  portfolioEditionMode.classList.add("authorized")
   document.body.classList.add("login")
 }
 
@@ -127,9 +152,9 @@ function removeEditionMode() {
   sessionStorage.removeItem("token")
   editionBar.classList.remove("authorized")
   loginLink.parentNode.removeChild(logoutBtn)
-  loginLink.style.display = "block"
-  filterBtnContainer.style.display = "block"
-  portfolioEdtionMode.classList.remove("authorized")
+  loginLink.classList.remove("hidden")
+  filterBtnContainer.classList.remove("hidden")
+  portfolioEditionMode.classList.remove("authorized")
   document.body.classList.remove("login")
   location.reload()
 }
@@ -144,7 +169,8 @@ openModalBtn.addEventListener("click", openModal)
 function openModal(e) {
   e.preventDefault()
   modalContainer = document.querySelector("#modal-container")
-  modalContainer.style.display = "flex"
+  modalContainer.classList.remove("hidden")
+  modalContainer.classList.add("open")
   modalContainer.removeAttribute("aria-hidden")
   modalContainer.addEventListener("click", closeModal)
   modalContainer
@@ -157,37 +183,35 @@ function openModal(e) {
   addProjectToModal()
 }
 
-// Call API and get data
+// Add data to modal
 function addProjectToModal() {
-  callApi().then(() => {
-    const data = allData
-    let modalHTML = ""
+  let modalHTML = ""
 
-    data.forEach((item) => {
-      modalHTML += `
+  allData.forEach((item) => {
+    modalHTML += `
           <figure class="modal-project-container project-container" data-id="${item.id}">
             <img src="${item.imageUrl}" alt="${item.title}" class="modal-img" >
             <button class="modal-trash-btn">
-              <img src="./assets/icons/trashBtn.svg" alt="supprimer la photo de la galerie" data-id="${item.id}" >
+              <img src="./assets/icons/trashBtn.svg" alt="supprimer la photo ${item.title} de la galerie" data-id="${item.id}" >
             </button>
           </figure>
         `
-    })
+  })
 
-    modalGalleryContainer.innerHTML = modalHTML
+  modalGalleryContainer.innerHTML = modalHTML
 
-    // Add event listener to trash buttons
-    const trashButtons =
-      modalGalleryContainer.querySelectorAll(".modal-trash-btn")
-    trashButtons.forEach((trashButton) => {
-      trashButton.addEventListener("click", handleDeleteImage)
-    })
+  // Add event listener on trash buttons
+  const trashButtons =
+    modalGalleryContainer.querySelectorAll(".modal-trash-btn")
+  trashButtons.forEach((trashButton) => {
+    trashButton.addEventListener("click", handleDeleteProject)
   })
 }
 
 function closeModal(e) {
   e.preventDefault()
-  modalContainer.style.display = "none"
+  modalContainer.classList.add("hidden")
+  modalContainer.classList.remove("open")
   modalContainer.setAttribute("aria-hidden", "true")
   modalContainer.removeEventListener("click", closeModal)
   modalContainer
@@ -197,11 +221,11 @@ function closeModal(e) {
     .querySelector(".modal")
     .removeEventListener("click", stopPropagation)
 
-  // Remove event listener to trash buttons
+  // Remove event listener from trash buttons
   const trashButtons =
     modalGalleryContainer.querySelectorAll(".modal-trash-btn")
   trashButtons.forEach((trashButton) => {
-    trashButton.removeEventListener("click", handleDeleteImage)
+    trashButton.removeEventListener("click", handleDeleteProject)
   })
 }
 
@@ -209,10 +233,11 @@ function stopPropagation(e) {
   e.stopPropagation()
 }
 
+// Function for detele images from table data and API
 const token = sessionStorage.getItem("token")
-// Function for detele images
-async function handleDeleteImage(e) {
-  const imageId = e.target.getAttribute("data-id")
+
+async function handleDeleteProject(e) {
+  const projectId = e.target.getAttribute("data-id")
 
   if (!token) {
     console.error("Merci de vous connecter")
@@ -224,24 +249,24 @@ async function handleDeleteImage(e) {
   })
 
   // Send DELETE request to API
-  const deleteUrl = `${WORKS_API_URL}/${imageId}`
+  const deleteUrl = `${WORKS_API_URL}/${projectId}`
 
   try {
-    const response = await fetch(deleteUrl, {
-      method: "DELETE",
-      headers: headers,
-    })
+    const response = await fetchData(deleteUrl, "DELETE", headers)
 
-    if (!response.ok) {
-      throw new Error("Erreur lors de la suppression du projet")
+    if (Object.keys(response).length === 0) {
+      // Remove project from table of data
+      let idToDelete = allData.id
+      let indexToDelete = allData.findIndex((item) => item.id === idToDelete)
+      allData.splice(indexToDelete, 1)
+
+      // Remove project from the DOM
+      document
+        .querySelectorAll(`.project-container[data-id="${projectId}"`)
+        .forEach((item) => {
+          item.remove()
+        })
     }
-
-    // Remove image from the DOM
-    document
-      .querySelectorAll(`.project-container[data-id="${imageId}"`)
-      .forEach((item) => {
-        item.remove()
-      })
   } catch (error) {
     console.error(error)
   }
@@ -249,44 +274,36 @@ async function handleDeleteImage(e) {
 
 // Handle form to add projects
 const modal = document.querySelector(".modal")
-const addImgForm = document.querySelector(".add-project-form")
-const addImgBtn = document.querySelector(".modal-add-project-btn")
+const adProjectForm = document.querySelector(".add-project-form")
+const addProjectBtn = document.querySelector(".modal-add-project-btn")
 const goBackBtn = document.querySelector(".go-back-btn")
 const closeFormBtn = document.querySelector(".close-form-btn")
 
-addImgForm.addEventListener("click", stopPropagation)
-addImgBtn.addEventListener("click", handleAddImgForm)
-goBackBtn.addEventListener("click", handleAddImgForm)
+adProjectForm.addEventListener("click", stopPropagation)
+addProjectBtn.addEventListener("click", handleAddProjectForm)
+goBackBtn.addEventListener("click", handleAddProjectForm)
 closeFormBtn.addEventListener("click", closeModal)
 
-function handleAddImgForm() {
-  addImgForm.classList.toggle("hidden")
+function handleAddProjectForm() {
+  adProjectForm.classList.toggle("hidden")
   modal.classList.toggle("hidden")
 }
 
-// Add select in form
-const selectContainer = document.querySelector(".input-group:nth-child(3)")
-let select
+// Add select and options in form
+const select = document.querySelector("#category")
 
-function createCategorySelection(data) {
-  select = document.createElement("select")
-  select.setAttribute("id", "category")
-
+function createCategorySelection(set) {
   let defaultOption = document.createElement("option")
   defaultOption.setAttribute("value", "")
   defaultOption.textContent = ""
   select.appendChild(defaultOption)
 
-  data.forEach((option) => {
+  set.forEach((option) => {
     let options = document.createElement("option")
     options.setAttribute("value", `${option.id}`)
     options.textContent = option.name
     select.appendChild(options)
   })
-
-  selectContainer.appendChild(select)
-
-  select.addEventListener("change", checkFields)
 }
 
 // Show image in file input
@@ -296,27 +313,25 @@ const file = document.querySelector("#add-project-input")
 const addProjectLabelBtn = document.querySelector(".add-project-label-btn")
 const addProjectParag = document.querySelector(".add-project-parag")
 
-file.addEventListener("change", previewFile)
+file.addEventListener("change", previewFileImage)
 
-function previewFile() {
+function previewFileImage() {
   const reader = new FileReader()
 
   reader.addEventListener("load", () => {
     preview.src = reader.result
-    preview.style.height = "130px"
+    preview.classList.add("preview")
   })
 
   if (file.files[0]) {
     reader.readAsDataURL(file.files[0])
-    addProjectLabelBtn.style.display = "none"
-    addProjectParag.style.display = "none"
-    inputFileContainer.style.paddingTop = "0"
-    inputFileContainer.style.paddingBottom = "0"
+    addProjectLabelBtn.classList.add("hidden")
+    addProjectParag.classList.add("hidden")
+    inputFileContainer.classList.add("resetPadding")
   } else {
-    addProjectLabelBtn.style.display = "block"
-    addProjectParag.style.display = "block"
-    inputFileContainer.style.paddingLeft = "123px"
-    inputFileContainer.style.paddingRight = "123px"
+    addProjectLabelBtn.classList.remove("hidden")
+    addProjectParag.classList.remove("hidden")
+    inputFileContainer.classList.remove("resetPadding")
   }
 }
 
@@ -331,6 +346,7 @@ let selectedCategory
 
 file.addEventListener("change", checkFields)
 projectTitleInput.addEventListener("input", checkFields)
+select.addEventListener("change", checkFields)
 
 function checkFields() {
   selectedFile = file.files[0]
@@ -370,28 +386,33 @@ function handleFormData(e) {
   sendFormData()
 }
 
-// Send request to API and add new project in gallery
+// Send POST request to API and add new project in gallery and modal
 async function sendFormData() {
   if (!token) {
     console.error("Merci de vous connecter")
     return
   }
 
-  try {
-    const response = await fetch(`${WORKS_API_URL}`, {
-      method: "POST",
-      headers: { Authorization: `Bearer ${token}` },
-      body: formData,
-    })
+  const headers = new Headers({
+    Authorization: `Bearer ${token}`,
+  })
 
-    if (response.ok) {
-      const data = await response.json()
-      allData = data
-      callApi()
+  try {
+    const response = await fetchData(
+      `${WORKS_API_URL}`,
+      "POST",
+      headers,
+      formData
+    )
+
+    if (response) {
+      allData.push(response)
+
+      addProjectsInGallery("0")
       addProjectToModal()
       resetForm()
     } else {
-      throw new Error("Erreur lors de l'ajout du projet")
+      console.log("Erreur lors de l'ajout du projet")
     }
   } catch (error) {
     console.error(error)
@@ -400,7 +421,7 @@ async function sendFormData() {
 
 const successPopUp = document.querySelector(".success-popup")
 
-// Reset form value
+// Reset form value and show succes message
 function resetForm() {
   file.value = ""
   projectTitleInput.value = ""
@@ -409,12 +430,12 @@ function resetForm() {
   submitProjectBtn.setAttribute("disabled", "true")
 
   preview.src = "./assets/icons/addProject.svg"
-  preview.style.height = "76px"
+  preview.classList.remove("preview")
 
-  addProjectLabelBtn.style.display = "block"
-  addProjectParag.style.display = "block"
+  addProjectLabelBtn.classList.remove("hidden")
+  addProjectParag.classList.remove("hidden")
 
-  inputFileContainer.style.padding = "22px 123px 19px"
+  inputFileContainer.classList.remove("resetPadding")
 
   successPopUp.classList.add("success")
 

@@ -220,7 +220,7 @@ a:hover {
   justify-content: center;
   align-items: baseline;
 }
-.protfolio-title-container .portfolio-edtion-mode {
+.protfolio-title-container .portfolio-edition-mode {
   margin-left: 30px;
   flex-direction: row;
   align-items: baseline;
@@ -228,16 +228,16 @@ a:hover {
   cursor: pointer;
   display: none;
 }
-.protfolio-title-container .portfolio-edtion-mode img {
+.protfolio-title-container .portfolio-edition-mode img {
   margin-right: 10px;
 }
-.protfolio-title-container .portfolio-edtion-mode .open-modal-btn {
+.protfolio-title-container .portfolio-edition-mode .open-modal-btn {
   text-decoration: none;
   color: #000;
 }
 #portfolio .filters-btn-container {
   text-align: center;
-  margin: 50px 0 40px;
+  margin: 30px 0 40px;
 }
 .filters-btn-container .filter-btn {
   border-radius: 60px;
@@ -383,7 +383,7 @@ footer nav ul {
 }
 
 .edition-bar.authorized,
-.portfolio-edtion-mode.authorized {
+.portfolio-edition-mode.authorized {
   display: flex;
 }
 
@@ -394,10 +394,12 @@ footer nav ul {
   left: 0%;
   width: 100%;
   height: 100%;
-  display: none;
   justify-content: center;
   align-items: center;
   background: rgba(0, 0, 0, 0.5);
+}
+#modal-container.open {
+  display: flex;
 }
 .modal,
 .add-project-form {
@@ -424,11 +426,22 @@ footer nav ul {
   font-size: 26px;
   text-align: center;
   margin-bottom: 45px;
+  font-family: Work Sans;
+  color: #000;
+  font-weight: 400;
 }
 .modal hr,
 .add-project-form hr {
   background: #b3b3b3;
   margin: 60px 0 35px;
+}
+.modal .modal-add-project-btn {
+  font-family: "Syne";
+  font-weight: 700;
+  color: white;
+  background-color: #1d6154;
+  border-radius: 60px;
+  cursor: pointer;
 }
 .modal .modal-add-project-btn,
 .add-project-form .form-add-project-btn {
@@ -489,11 +502,17 @@ footer nav ul {
   height: 76px;
   margin: 0 auto;
 }
+.input-group .add-project-icon.preview {
+  height: 130px;
+}
 .input-group:nth-child(1) {
   background: #e8f1f6;
   border-radius: 3px;
   padding: 22px 123px 19px;
   text-align: center;
+}
+.input-group:nth-child(1).resetPadding {
+  padding: 0 123px;
 }
 .input-group:nth-child(1) label {
   margin: 6px 0 7px;
@@ -514,10 +533,10 @@ footer nav ul {
 .form-error-msg {
   color: #b1663c;
   text-align: center;
-  margin: 10px 0;
+  margin: 10px 0 0;
 }
 .add-project-form hr {
-  margin: 40px 0 0;
+  margin: 45px 0 30px;
 }
 
 /* Success PopUp */
