@@ -9,7 +9,7 @@ function updateErrorMessage(message) {
   loginErrorMsg.textContent = message
 }
 
-// Utils function check inputs
+// Utils function check inputs and send request
 async function handleSubmit(e) {
   e.preventDefault()
 

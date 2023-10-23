@@ -31,7 +31,7 @@ async function fetchData(url, method = "GET", headers = {}, body = null) {
 }
 
 // Get initial projetcs
-let set = new Set()
+let categoryList = new Set()
 async function getProjects() {
   const data = await fetchData(WORKS_API_URL)
   if (data) {
@@ -45,26 +45,26 @@ async function getProjects() {
         id: project.category.id,
       }
       let isDuplicate = false
-      for (let item of set) {
+      for (let item of categoryList) {
         if (item.name === categoryInfo.name && item.id === categoryInfo.id) {
           isDuplicate = true
           break
         }
       }
       if (!isDuplicate) {
-        set.add(categoryInfo)
+        categoryList.add(categoryInfo)
       }
     }
   })
   createButtons("Tous", "0")
-  if (set && set.size > 0) {
-    for (let item of set.values()) {
+  if (categoryList && categoryList.size > 0) {
+    for (let item of categoryList.values()) {
       createButtons(item.name, item.id)
     }
   } else {
     console.log("L'objet set est vide ou non défini")
   }
-  createCategorySelection(set)
+  createCategorySelection(categoryList)
 }
 getProjects()
 
@@ -183,7 +183,7 @@ function openModal(e) {
   addProjectToModal()
 }
 
-// Add data to modal
+// Add all projects to modal
 function addProjectToModal() {
   let modalHTML = ""
 
@@ -233,8 +233,9 @@ function stopPropagation(e) {
   e.stopPropagation()
 }
 
-// Function for detele images from table data and API
+// Send DELETE request to API and remove project from gallery and modal
 const token = sessionStorage.getItem("token")
+const successPopUpDelete = document.querySelector(".success-popup-delete")
 
 async function handleDeleteProject(e) {
   const projectId = e.target.getAttribute("data-id")
@@ -266,6 +267,13 @@ async function handleDeleteProject(e) {
         .forEach((item) => {
           item.remove()
         })
+
+      // Show success message
+      successPopUpDelete.classList.add("success")
+
+      setTimeout(() => {
+        successPopUpDelete.classList.remove("success")
+      }, 2500)
     }
   } catch (error) {
     console.error(error)
@@ -292,13 +300,13 @@ function handleAddProjectForm() {
 // Add select and options in form
 const select = document.querySelector("#category")
 
-function createCategorySelection(set) {
+function createCategorySelection(categoryList) {
   let defaultOption = document.createElement("option")
   defaultOption.setAttribute("value", "")
   defaultOption.textContent = ""
   select.appendChild(defaultOption)
 
-  set.forEach((option) => {
+  categoryList.forEach((option) => {
     let options = document.createElement("option")
     options.setAttribute("value", `${option.id}`)
     options.textContent = option.name
@@ -419,7 +427,7 @@ async function sendFormData() {
   }
 }
 
-const successPopUp = document.querySelector(".success-popup")
+const successPopUpAdd = document.querySelector(".success-popup-add")
 
 // Reset form value and show succes message
 function resetForm() {
@@ -437,9 +445,9 @@ function resetForm() {
 
   inputFileContainer.classList.remove("resetPadding")
 
-  successPopUp.classList.add("success")
+  successPopUpAdd.classList.add("success")
 
   setTimeout(() => {
-    successPopUp.classList.remove("success")
-  }, 1500)
+    successPopUpAdd.classList.remove("success")
+  }, 2500)
 }
